@@ -139,7 +139,7 @@ extern "C" {
    }
 
    /* Initializes the CPU, AHB and APB busses clocks */
-   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK;
                                 // | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
@@ -195,7 +195,7 @@ void SystemClock_Config(void)
 }
 #endif
 
-SystemCoreClockUpdate(); // to make sure the clock variables are updated
+extern void SystemCoreClockUpdate(void); // to make sure the clock variables are updated
 
 #ifdef __cplusplus
 }
