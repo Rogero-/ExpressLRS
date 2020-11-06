@@ -95,23 +95,29 @@
 Credit to Jacob Walser (jaxxzer) for the pinout!!!
 https://github.com/jaxxzer
 */
-#define GPIO_PIN_NSS            PB12
-#define GPIO_PIN_BUSY           -1 // NOT USED ON THIS TARGET 
-#define GPIO_PIN_DIO0           PA15
-#define GPIO_PIN_DIO1           PA1 // NOT CORRECT!!! PIN STILL NEEDS TO BE FOUND BUT IS CURRENTLY UNUSED
-#define GPIO_PIN_MOSI           PB15
-#define GPIO_PIN_MISO           PB14
-#define GPIO_PIN_SCK            PB13
-#define GPIO_PIN_RST            PC14
+#define GPIO_PIN_NSS            PB12 //confirmed on SLIM+
+#define GPIO_PIN_BUSY           -1   // NOT USED ON THIS TARGET 
+#define GPIO_PIN_DIO0           PA15 //confirmed on SLIM+
+#define GPIO_PIN_DIO1           PA1  // NOT CORRECT!!! PIN STILL NEEDS TO BE FOUND BUT IS CURRENTLY UNUSED
+/////////////////////////////////////// NOT FOUND ON SLIM+ EITHER.
+#define GPIO_PIN_MOSI           PB15 //confirmed on SLIM+
+#define GPIO_PIN_MISO           PB14 //confirmed on SLIM+
+#define GPIO_PIN_SCK            PB13 //confirmed on SLIM+
+#define GPIO_PIN_RST            PC14 //confirmed on SLIM+
 #define GPIO_PIN_SDA            PB7
 #define GPIO_PIN_SCL            PB6
+
 #ifdef USE_R9MM_R9MINI_SBUS
     #define GPIO_PIN_RCSIGNAL_RX    PA3
     #define GPIO_PIN_RCSIGNAL_TX    PA2
-#else
+#elif TARGET_R9SLIM_RX	
+	   #define GPIO_PIN_RCSIGNAL_RX    PB11 // RX1 PIN OF CONNECTOR 1 ON SLIM+
+    #define GPIO_PIN_RCSIGNAL_TX    PA9  // TX1 PIN OF CONNECTOR 1 ON SLIM+
+#else //default R9MM_R9MINI or R9MX
     #define GPIO_PIN_RCSIGNAL_RX    PA10
     #define GPIO_PIN_RCSIGNAL_TX    PA9
 #endif
+
 #ifdef TARGET_R9MX_RX
     #define GPIO_PIN_LED            PB2 // Red
     #define GPIO_PIN_LED_RED        PB2 // Red
@@ -122,7 +128,7 @@ https://github.com/jaxxzer
     #define GPIO_PIN_LED_RED        PA11 // Red
     #define GPIO_PIN_LED_GREEN      PA12 // Green 
     #define GPIO_PIN_BUTTON         PC13  // pullup e.g. LOW when pressed	
-#else
+#else //R9MM_R9MINI
     #define GPIO_PIN_LED            PC1 // Red
     #define GPIO_PIN_LED_RED        PC1 // Red
     #define GPIO_PIN_LED_GREEN      PB3 // Green 
