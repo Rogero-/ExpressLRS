@@ -171,6 +171,9 @@ void SystemClock_Config(void)
 
   SystemCoreClockUpdate();
 }
+#endif
+
+//extern void SystemCoreClockUpdate(void); // to make sure the clock variables are updated
 
 #ifdef __cplusplus
 }
