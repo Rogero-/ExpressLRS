@@ -575,6 +575,28 @@ void ICACHE_RAM_ATTR TXdoneISR()
 
 void setup()
 {
+    pinMode(GPIO_PIN_LED, OUTPUT);
+    pinMode(GPIO_PIN_LED_GREEN, OUTPUT);
+
+    while(1)
+    {
+    #ifdef GPIO_PIN_LED
+		digitalWrite(GPIO_PIN_LED, LOW);  //TURN OFF RED LED
+	#endif
+    #ifdef GPIO_PIN_LED
+		digitalWrite(GPIO_PIN_LED_GREEN, HIGH);  //TURN ON GREEN LED
+        //digitalWrite(GPIO_PIN_LED_GREEN, (millis() / 1000) % 2);  //BLINK GREEN LED
+	#endif
+    delay(1000);
+    #ifdef GPIO_PIN_LED
+		digitalWrite(GPIO_PIN_LED_GREEN, LOW);  //TURN OFF GREEN LED
+    #endif
+    #ifdef GPIO_PIN_LED
+		digitalWrite(GPIO_PIN_LED, HIGH);  //TURN ON RED LED
+	#endif
+    delay(1000);
+    } //end while
+ 
     delay(100);
 
 #ifdef PLATFORM_STM32
