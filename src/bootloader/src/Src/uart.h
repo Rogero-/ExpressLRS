@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 /* Timeout for HAL. */
-#define UART_TIMEOUT ((uint16_t)2000u)
+#define UART_TIMEOUT ((uint16_t)1000u)
 
 /* Status report for the functions. */
 typedef enum
@@ -30,7 +30,7 @@ uart_status uart_transmit_bytes(uint8_t *data, uint32_t len);
 
 void uart_init(void);
 
-#if defined(DEBUG_UART) && defined(STM32F1)
+#ifdef DEBUG_UART
 void debug_send(uint8_t data);
 #else
 #define debug_send(data)

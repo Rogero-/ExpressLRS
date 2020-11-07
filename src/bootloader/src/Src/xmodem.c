@@ -10,12 +10,13 @@
 #include "xmodem.h"
 #include "main.h"
 
-uint16_t flashcounter;
+uint16_t flashcounter = 0;
 
 /* Global variables. */
-static uint8_t xmodem_packet_number; /**< Packet number counter. */
-static uint32_t xmodem_actual_flash_address; /**< Address where we have to write. */
-static uint8_t x_first_packet_received; /**< First packet or not. */
+static uint8_t xmodem_packet_number = 1u; /**< Packet number counter. */
+static uint32_t xmodem_actual_flash_address =
+    0u; /**< Address where we have to write. */
+static uint8_t x_first_packet_received = false; /**< First packet or not. */
 
 /* Local functions. */
 static uint16_t xmodem_calc_crc(uint8_t *data, uint16_t length);
@@ -23,7 +24,7 @@ static xmodem_status xmodem_handle_packet(uint8_t size);
 static xmodem_status xmodem_error_handler(uint8_t *error_number,
                                           uint8_t max_error_number);
 
-bool ledState;
+bool ledState = false;
 
 /**
  * @brief   This function is the base of the Xmodem protocol.
@@ -47,19 +48,20 @@ void xmodem_receive(void) {
 
     /* Get the header from UART. */
     uart_status comm_status = uart_receive_timeout(&header, 1u, 1000u);
-    if (UART_OK != comm_status) {
-      /* Spam the host (until we receive something) with ACSII "C", to notify it,
-      * we want to use CRC-16. */
-      if (false == x_first_packet_received) {
-        (void)uart_transmit_ch(X_C);
-        led_state_set(ledState ? LED_FLASHING : LED_FLASHING_ALT);
-        ledState = !ledState;
-      }
-      /* Uart timeout or any other errors. */
-      else {
-        status = xmodem_error_handler(&error_number, X_MAX_ERRORS);
-      }
-      continue;
+
+    /* Spam the host (until we receive something) with ACSII "C", to notify it,
+     * we want to use CRC-16. */
+    if ((UART_OK != comm_status) && (false == x_first_packet_received)) {
+      (void)uart_transmit_ch(X_C);
+      led_red_state_set(ledState);
+      led_green_state_set(!ledState);
+      ledState = !ledState;
+    }
+    /* Uart timeout or any other errors. */
+    else if ((UART_OK != comm_status) && (true == x_first_packet_received)) {
+      status = xmodem_error_handler(&error_number, X_MAX_ERRORS);
+    } else {
+      /* Do nothing. */
     }
 
     xmodem_status packet_status = X_ERROR;
@@ -90,8 +92,8 @@ void xmodem_receive(void) {
     case X_EOT:
       /* ACK, feedback to user (as a text), then jump to user application. */
       (void)uart_transmit_ch(X_ACK);
-      //(void)uart_transmit_str((uint8_t *)"\n\rFirmware updated!\n\r");
-      //(void)uart_transmit_str((uint8_t *)"Jumping to user application...\n\r");
+      (void)uart_transmit_str((uint8_t *)"\n\rFirmware updated!\n\r");
+      (void)uart_transmit_str((uint8_t *)"Jumping to user application...\n\r");
       flash_jump_to_app();
       break;
     /* Abort from host. */
@@ -118,7 +120,8 @@ static uint16_t xmodem_calc_crc(uint8_t *data, uint16_t length) {
   uint16_t crc = 0u;
 
   if (flashcounter % 5 == 0) {
-    led_state_set(ledState ? LED_FLASHING : LED_FLASHING_ALT);
+    led_red_state_set(ledState);
+    led_green_state_set(!ledState);
     ledState = !ledState;
   }
   flashcounter++;
